@@ -278,6 +278,8 @@ int main(int argc, char *argv[]) {
 		fprintf(stderr, "Unabel to create work queue\n");
 		return -1;
 	}
+
+	// populate workQ
 	for (i = start; i < argc; i++) {
 		char root[256], ext[256], obj[256];
 		LList *ll;
@@ -298,6 +300,8 @@ int main(int argc, char *argv[]) {
 		ll = ll_create();
 		(void) tsht_insert(theTable, argv[i], ll, &llold);
 	}
+
+	// consume workQ
 	while ((st = (char *)ll_remove_from_head(workQ)) != NULL) {
 		LList *ll = (LList *)tsht_lookup(theTable, st);
 		void *llold;
