@@ -10,7 +10,7 @@ public class MyConcurrentList {
 		list = new ArrayList<Object>();
 	}
 
-	public static synchronized MyConcurrentList getInstance () {
+	public static MyConcurrentList getInstance () {
 		return instance;
 	}
 
