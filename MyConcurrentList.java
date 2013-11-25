@@ -27,7 +27,7 @@ public class MyConcurrentList {
 	}
 
 	// returns the first String or null if the list is empty
-	public String getFirstElement() {
+	public String pop() {
 		synchronized (list) {
 			//System.out.println("[MyConcurrentList] in sync lock");
 			if (list.size() > 0) {

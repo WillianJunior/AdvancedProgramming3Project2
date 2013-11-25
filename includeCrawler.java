@@ -18,24 +18,24 @@ public class includeCrawler {
 		dirList = new MyConcurrentLockedList();
 
 		// assemble the files list (working queue)
+		// add the current directory to the list
+		dirList.add("./");
+		// get -Idir argument files
+		int argc = 0;
+		for (String arg : args)
+			if (arg.matches("-I(.)*")) {
+				dirList.add(arg.substring(2));
+				argc++;
+			}
+
 		// get path files
 		String cpathStr = System.getenv(CPATH);
 		if (cpathStr != null) {
 			String[] cpath = cpathStr.split(":");
 			for (String path : cpath) {
-				workQ.add(path);
+				dirList.add(path);
 			}
 		}
-
-		// get -Idir argument files
-		int argc = 0;
-		// add the current directory to the list
-		dirList.add("./");
-		for (String arg : args)
-			if (arg.matches("-I*")) {
-				dirList.add(arg.substring(2));
-				argc++;
-			}
 		// just some precaution: lock the list for updates
 		dirList.lock();
 
@@ -64,7 +64,7 @@ public class includeCrawler {
 				return;
 			}
 		} else
-			workersNum = 20; // change to 2 later
+			workersNum = 10; // change to 2 later
 		Thread[] threadPool = new Thread[workersNum];
 
 		// start the workers thread

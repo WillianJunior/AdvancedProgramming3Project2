@@ -21,7 +21,7 @@ public class HarvestThread implements Runnable {
 		System.out.println("[HarvestThread] Starting the harvest");
 		String output;
 		while (true) {
-			if ((output = outputList.getFirstElement()) != null)
+			if ((output = outputList.pop()) != null)
 				System.out.println("[HarvestThread] " + output);
 			else if (!finished)
 				try {
