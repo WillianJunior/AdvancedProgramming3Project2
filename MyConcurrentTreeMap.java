@@ -1,17 +1,15 @@
 import java.util.*;
 import java.lang.UnsupportedOperationException;
 
-public class MyConcurrentHashMap {
+public class MyConcurrentTreeMap {
 
 	// the int is the id to order the files
-	protected Map<Integer, String> list;
+	protected TreeMap<Integer, String> list;
 	private int inKey;
-	private int outKey;
 
-	public MyConcurrentHashMap () {
+	public MyConcurrentTreeMap () {
 		list = new TreeMap<Integer, String>();
 		inKey = 0;
-		outKey = 0;
 	}
 
 	public void add (String item) throws Exception {
@@ -43,11 +41,11 @@ public class MyConcurrentHashMap {
 		synchronized (list) {
 			//System.out.println("[MyConcurrentList.pop] lock");
 			if (list.size() > 0) {
-				Integer key = (Integer)list.keySet().toArray()[0];
-				String val = (String)list.values().toArray()[0];
-				list.remove(outKey++);
+				Map.Entry<Integer, String> firstEntry = list.firstEntry();
+				//System.out.println("Add n" + key + " - " + item);
+				list.remove(firstEntry.getKey());
 				//System.out.println("[MyConcurrentList.pop] unlock");
-				return new AbstractMap.SimpleImmutableEntry<Integer,String>(key, val);
+				return firstEntry;
 			} else {
 				//System.out.println("[MyConcurrentList.pop] unlock");
 				return null;

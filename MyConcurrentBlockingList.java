@@ -1,10 +1,13 @@
 import java.util.*;
 import java.lang.UnsupportedOperationException;
 
-public class MyConcurrentBlockingList extends MyConcurrentHashMap {
+public class MyConcurrentBlockingList extends MyConcurrentTreeMap {
+
+	private int currentKey;
 
 	public MyConcurrentBlockingList () {
 		super();
+		currentKey = 0;
 	}
 
 	public Map.Entry<Integer, String> pop () {
@@ -14,7 +17,7 @@ public class MyConcurrentBlockingList extends MyConcurrentHashMap {
 	public String blockingPop () throws InterruptedException {
 		//throw new UnsupportedOperationException();
 		Map.Entry<Integer, String> output;
-		while ((output = super.pop()) == null)
+		while ((list.size() > 0 && list.firstKey() > currentKey) || (output = super.pop()) == null) {
 			try {
 				synchronized (this) {
 					this.wait();
@@ -24,6 +27,8 @@ public class MyConcurrentBlockingList extends MyConcurrentHashMap {
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
+		}
+		currentKey++;
 		return output.getValue();
 	}
 

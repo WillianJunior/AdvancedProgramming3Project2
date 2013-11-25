@@ -4,11 +4,11 @@ import java.io.*;
 public class CrawlerThread implements Runnable {
 
 	private int threadNum;
-	private volatile MyConcurrentHashMap workQ;
+	private volatile MyConcurrentTreeMap workQ;
 	private volatile MyConcurrentBlockingList outputList;
 	private volatile MyConcurrentLockedList dirList;
 
-	public CrawlerThread (int threadNum, MyConcurrentHashMap workQ, MyConcurrentLockedList dirList, MyConcurrentBlockingList outputList) {
+	public CrawlerThread (int threadNum, MyConcurrentTreeMap workQ, MyConcurrentLockedList dirList, MyConcurrentBlockingList outputList) {
 		this.threadNum = threadNum;
 		this.workQ = workQ;
 		this.outputList = outputList;
@@ -25,7 +25,7 @@ public class CrawlerThread implements Runnable {
 			fileName = fileNameEntry.getValue();
 			String result = fileName.split("\\.")[0] + ".o: " + fileName;
 			try {
-				List<String> dependencies = removeRepeated(process(fileName, new ArrayList<String>()));
+				Set<String> dependencies = process(fileName, new LinkedHashSet<String>());
 				for (String dep : dependencies)
 					result += " " + dep;
 				//System.out.println("Adding: " + fileNameEntry.getKey() + " -> " + result);
@@ -37,21 +37,11 @@ public class CrawlerThread implements Runnable {
 		}
 	}
 
-	// given a list, remove all repeated strings
-	private List<String> removeRepeated (List<String> list) {
-		List<String> newList = new ArrayList<String>();
-		for (String s : list) 
-			if (!newList.contains(s)) 
-				newList.add(s);
-
-		return newList;
-	}
-
 	// recursive file processing function
-	private List<String> process (String fileName, List<String> includeList) throws Exception {
+	private Set<String> process (String fileName, Set<String> includeList) throws Exception {
 		
-		List<String> outputTemp = new ArrayList<String>();
-		List<String> output = new ArrayList<String>(); // this variable is to force includeList to be
+		Set<String> outputTemp = new LinkedHashSet<String>();
+		Set<String> output = new LinkedHashSet<String>(); // this variable is to force includeList to be
 													   // unreferenced sooner (like free)
 
 		// find the path of the file
@@ -76,8 +66,16 @@ public class CrawlerThread implements Runnable {
 		
 		output.addAll(includeList);
 		output.addAll(outputTemp);
-		for (String s : outputTemp)
+		//System.out.println();
+		//System.out.println(fileName); 
+		//System.out.println("file includeList - " + includeList.toString());
+		//System.out.println("file outputTemp - " + outputTemp.toString());
+		//System.in.read();
+
+		for (String s : outputTemp) {
+			//System.out.println(s);
 			output.addAll(process(s, output));
+		}
 
 		return output;
 	}

@@ -6,14 +6,14 @@ public class includeCrawler {
 	private static final String CPATH = "CPATH";
 	private static final String CRAWLER_THREADS = "CRAWLER_THREADS";
 
-	public static volatile MyConcurrentHashMap workQ;
+	public static volatile MyConcurrentTreeMap workQ;
 	public static volatile MyConcurrentBlockingList outputList;
 	public static volatile MyConcurrentLockedList dirList;
 
 	public static void main(String[] args) throws Exception {
 		 
 		// instanciate the workQ
-		workQ = new MyConcurrentHashMap();
+		workQ = new MyConcurrentTreeMap();
 		outputList = new MyConcurrentBlockingList();
 		dirList = new MyConcurrentLockedList();
 
