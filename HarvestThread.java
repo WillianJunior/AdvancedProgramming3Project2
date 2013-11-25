@@ -10,8 +10,11 @@ public class HarvestThread implements Runnable {
 		finished = false;
 	}
 
-	public void finished () {
+	public void finish () {
 		finished = true;
+		synchronized (outputList) {
+			outputList.finish();
+		}
 	}
 
 	public void run () {
@@ -20,23 +23,15 @@ public class HarvestThread implements Runnable {
 		// and the main thread set the finished flag
 		System.out.println("[HarvestThread] Starting the harvest");
 		String output;
-		while (true) {
-			if ((output = outputList.pop()) != null)
-				System.out.println("[HarvestThread] " + output);
-			else if (!finished)
-				try {
-					synchronized (this) {
-						System.out.println("[HarvestThread] waiting");
-						this.wait();
-					}
-				} catch (Exception e) {
-					System.out.println("Get exception:");
-					e.printStackTrace();
-					System.exit(0);
+		try {
+			while (true) {
+				if ((output = outputList.blockingPop()) != null)
+					System.out.println("[HarvestThread] " + output);
+				else if (finished) {
+					break;
 				}
-			else 
-				break;
-		}
+			}
+		} catch (InterruptedException e) {}
 		System.out.println("[HarvestThread] The harvest is finished");
 	
 	}

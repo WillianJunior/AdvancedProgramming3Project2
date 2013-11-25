@@ -50,8 +50,9 @@ public class includeCrawler {
 		}
 
 		// create the harvest thread
-		HarvestThread harvestThread;
-		new Thread(harvestThread = new HarvestThread(outputList)).start();
+		Thread harvestThread;
+		harvestThread = new Thread(new HarvestThread(outputList));
+		harvestThread.start();
 
 		// create working thread pool
 		String workersNumVar = System.getenv(CRAWLER_THREADS);
@@ -80,10 +81,7 @@ public class includeCrawler {
 		}
 
 		// signal the harvest thread that it can be finished
-		harvestThread.finished();
-		synchronized (harvestThread) {
-			harvestThread.notify();
-		}
+		harvestThread.interrupt();
 
 		System.out.println("[includeCrawler] main is finished");
 
