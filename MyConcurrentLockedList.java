@@ -1,19 +1,13 @@
 import java.util.*;
 import java.lang.UnsupportedOperationException;
 
-public class MyConcurrentLockedList {
+public class MyConcurrentLockedList extends MyConcurrentList {
 
-	private List<Object> list;
-	private static MyConcurrentLockedList instance = new MyConcurrentLockedList();
 	private boolean locked;
 
-	private MyConcurrentLockedList () {
-		list = new ArrayList<Object>();
+	public MyConcurrentLockedList () {
+		super();
 		locked = false;
-	}
-
-	public static MyConcurrentLockedList getInstance () {
-		return instance;
 	}
 
 	// this should only happen once
@@ -28,12 +22,10 @@ public class MyConcurrentLockedList {
 		}
 	}
 
-	public void add (Object item) throws Exception {
+	@Override
+	public void add (String item) throws Exception {
 		if (!locked)
-			synchronized (list) {
-				System.out.println("new path: " + (String)item);
-				list.add(item);
-			}
+			super.add(item);
 		else
 			throw new Exception("locked");
 	}

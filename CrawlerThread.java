@@ -2,7 +2,7 @@ import java.util.*;
 
 public class CrawlerThread implements Runnable {
 
-	public CrawlerThread () {
+	public CrawlerThread (MyConcurrentList workQ, MyConcurrentLockedList dirList, MyConcurrentList outputList) {
 		
 	}
 

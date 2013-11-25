@@ -3,21 +3,38 @@ import java.lang.UnsupportedOperationException;
 
 public class MyConcurrentList {
 
-	private List<Object> list;
-	private static MyConcurrentList instance = new MyConcurrentList();
+	// yes, this can be implemented as a stack, but using arraylist
+	// gives me more freedom in the future
+	protected List<String> list;
 
-	private MyConcurrentList () {
-		list = new ArrayList<Object>();
+	public MyConcurrentList () {
+		list = new ArrayList<String>();
 	}
 
-	public static MyConcurrentList getInstance () {
-		return instance;
-	}
-
-	public void add (Object item) {
+	public void add (String item) throws Exception {
 		synchronized (list) {
-			System.out.println("new path: " + (String)item);
 			list.add(item);
+		}
+	}
+
+	public void printout () {
+		synchronized (list) {
+			System.out.println("List printout: ");
+			for (String s : list) {
+				System.out.println(s);
+			}
+		}
+	}
+
+	// returns the first String or null if the list is empty
+	public String getFirstElement() {
+		synchronized (list) {
+			if (list.size() > 0) {
+				String temp = list.get(0);
+				list.remove(0);
+				return temp;
+			} else
+				return null;
 		}
 	}
 
