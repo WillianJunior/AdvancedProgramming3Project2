@@ -4,11 +4,11 @@ import java.io.*;
 public class CrawlerThread implements Runnable {
 
 	private int threadNum;
-	private volatile MyConcurrentList workQ;
+	private volatile MyConcurrentHashMap workQ;
 	private volatile MyConcurrentBlockingList outputList;
 	private volatile MyConcurrentLockedList dirList;
 
-	public CrawlerThread (int threadNum, MyConcurrentList workQ, MyConcurrentLockedList dirList, MyConcurrentBlockingList outputList) {
+	public CrawlerThread (int threadNum, MyConcurrentHashMap workQ, MyConcurrentLockedList dirList, MyConcurrentBlockingList outputList) {
 		this.threadNum = threadNum;
 		this.workQ = workQ;
 		this.outputList = outputList;
@@ -16,25 +16,25 @@ public class CrawlerThread implements Runnable {
 	}
 
 	public void run () {
-		System.out.println("[CrawlerThread" + threadNum + "] Thread started");
+		//System.out.println("[CrawlerThread" + threadNum + "] Thread started");
+		Map.Entry<Integer,String> fileNameEntry;
 		String fileName;
 		// process a file while there is still one in the list
-		while ((fileName = workQ.pop()) != null) {
-			System.out.println("[CrawlerThread" + threadNum + "] processing " + fileName);
+		while ((fileNameEntry = workQ.pop()) != null) {
+			//System.out.println("[CrawlerThread" + threadNum + "] processing " + fileName);
+			fileName = fileNameEntry.getValue();
 			String result = fileName.split("\\.")[0] + ".o: " + fileName;
 			try {
 				List<String> dependencies = removeRepeated(process(fileName, new ArrayList<String>()));
 				for (String dep : dependencies)
 					result += " " + dep;
-				outputList.add(result);
+				//System.out.println("Adding: " + fileNameEntry.getKey() + " -> " + result);
+				outputList.add(fileNameEntry.getKey(), result);
 			} catch (Exception e) {
-				System.out.println("[CrawlerThread" + threadNum + "] Exception: ");
+				//System.out.println("[CrawlerThread" + threadNum + "] Exception: ");
 				e.printStackTrace();
 			}
 		}
-
-		// suicide
-		return;
 	}
 
 	// given a list, remove all repeated strings
@@ -62,7 +62,7 @@ public class CrawlerThread implements Runnable {
 		BufferedReader reader = new BufferedReader(fr);
 		String line;
 		while ((line = reader.readLine()) != null) {
-			if (line.matches("( )*#include( )*\"(.)*\"( )*")) {
+			if (line.matches("( )*#include( )*\"(.)*\".*")) {
 				String dependency = line.split("\"")[1];
 				if (!includeList.contains(dependency))
 					outputTemp.add(dependency);

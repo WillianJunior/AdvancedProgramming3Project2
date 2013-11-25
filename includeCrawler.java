@@ -6,14 +6,14 @@ public class includeCrawler {
 	private static final String CPATH = "CPATH";
 	private static final String CRAWLER_THREADS = "CRAWLER_THREADS";
 
-	public static volatile MyConcurrentList workQ;
+	public static volatile MyConcurrentHashMap workQ;
 	public static volatile MyConcurrentBlockingList outputList;
 	public static volatile MyConcurrentLockedList dirList;
 
 	public static void main(String[] args) throws Exception {
 		 
 		// instanciate the workQ
-		workQ = new MyConcurrentList();
+		workQ = new MyConcurrentHashMap();
 		outputList = new MyConcurrentBlockingList();
 		dirList = new MyConcurrentLockedList();
 
@@ -41,6 +41,7 @@ public class includeCrawler {
 
 		// get local directory files passed by argv
 		for(int i=argc; i<args.length; i++) {
+			//System.out.println(args[i]);
 			if (args[i].matches("^.+[.y]$") || args[i].matches("^.+[.l]$") || args[i].matches("^.+[.c]$"))
 				workQ.add(args[i]);
 			else {
@@ -48,6 +49,9 @@ public class includeCrawler {
 				return;
 			}
 		}
+
+		//workQ.printout();
+		//System.in.read();
 
 		// create the harvest thread
 		Thread harvestThread;
@@ -57,7 +61,7 @@ public class includeCrawler {
 		// create working thread pool
 		String workersNumVar = System.getenv(CRAWLER_THREADS);
 		int workersNum;
-		if (cpathStr != null) {
+		if (workersNumVar != null) {
 			try {
 				workersNum = Integer.parseInt(workersNumVar);
 			} catch (Exception e){
@@ -65,7 +69,7 @@ public class includeCrawler {
 				return;
 			}
 		} else
-			workersNum = 10; // change to 2 later
+			workersNum = 1; // change to 2 later
 		Thread[] threadPool = new Thread[workersNum];
 
 		// start the workers thread
@@ -77,13 +81,13 @@ public class includeCrawler {
 		// wait for the workers threads to finish
 		for (int i=0; i<workersNum; i++) {
 			threadPool[i].join();
-			System.out.println("[includeCrawler] Thread " + i + " is done");
+			//System.out.println("[includeCrawler] Thread " + i + " is done");
 		}
 
 		// signal the harvest thread that it can be finished
 		harvestThread.interrupt();
 
-		System.out.println("[includeCrawler] main is finished");
+		//System.out.println("[includeCrawler] main is finished");
 
 	}
 

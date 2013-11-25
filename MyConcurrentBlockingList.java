@@ -1,21 +1,19 @@
 import java.util.*;
 import java.lang.UnsupportedOperationException;
 
-public class MyConcurrentBlockingList extends MyConcurrentList {
+public class MyConcurrentBlockingList extends MyConcurrentHashMap {
 
 	public MyConcurrentBlockingList () {
 		super();
 	}
 
-	public void finish () {}
-
-	public String pop () {
+	public Map.Entry<Integer, String> pop () {
 		throw new UnsupportedOperationException();
 	}
 
 	public String blockingPop () throws InterruptedException {
 		//throw new UnsupportedOperationException();
-		String output;
+		Map.Entry<Integer, String> output;
 		while ((output = super.pop()) == null)
 			try {
 				synchronized (this) {
@@ -26,16 +24,18 @@ public class MyConcurrentBlockingList extends MyConcurrentList {
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-		return output;
+		return output.getValue();
 	}
 
-	//public void pop (Object o) {}
+	@Override
+	public void add (String item) throws Exception  {
+		throw new UnsupportedOperationException();
+	}
 
 	@Override
-	public void add (String item) throws Exception {
-		//throw new UnsupportedOperationException();
+	public void add (int id, String item) throws Exception {
 		synchronized (this) {
-			super.add(item);
+			super.add(id, item);
 			this.notifyAll();
 		}
 	}
