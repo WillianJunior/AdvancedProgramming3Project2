@@ -23,7 +23,7 @@ public class CrawlerThread implements Runnable {
 			System.out.println("[CrawlerThread" + threadNum + "] processing " + fileName);
 			String result = fileName.split("\\.")[0] + ".o: " + fileName;
 			try {
-				List<String> dependencies = removeRepeated(process(fileName));
+				List<String> dependencies = removeRepeated(process(fileName, new ArrayList<String>()));
 				for (String dep : dependencies)
 					result += " " + dep;
 				outputList.add(result);
@@ -32,6 +32,9 @@ public class CrawlerThread implements Runnable {
 				e.printStackTrace();
 			}
 		}
+
+		// suicide
+		return;
 	}
 
 	// given a list, remove all repeated strings
@@ -45,10 +48,11 @@ public class CrawlerThread implements Runnable {
 	}
 
 	// recursive file processing function
-	private List<String> process (String fileName) throws Exception {
+	private List<String> process (String fileName, List<String> includeList) throws Exception {
 		
 		List<String> outputTemp = new ArrayList<String>();
-		List<String> output = new ArrayList<String>();
+		List<String> output = new ArrayList<String>(); // this variable is to force includeList to be
+													   // unreferenced sooner (like free)
 
 		// find the path of the file
 		String filePath = getFilePath(fileName);
@@ -60,16 +64,20 @@ public class CrawlerThread implements Runnable {
 		while ((line = reader.readLine()) != null) {
 			if (line.matches("( )*#include( )*\"(.)*\"( )*")) {
 				String dependency = line.split("\"")[1];
-				outputTemp.add(dependency);
+				if (!includeList.contains(dependency))
+					outputTemp.add(dependency);
 			}
 		}
 
 		// IMPORTANT!!! without this there is the real chance of
-		// exceeding the max num of open files
+		// exceeding the max num of open files (happened!!)
 		fr.close();
 
+		
+		output.addAll(includeList);
+		output.addAll(outputTemp);
 		for (String s : outputTemp)
-			output.addAll(process(s));
+			output.addAll(process(s, output));
 
 		return output;
 	}

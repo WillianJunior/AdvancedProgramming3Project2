@@ -9,11 +9,9 @@ public class MyConcurrentBlockingList extends MyConcurrentList {
 
 	@Override
 	public void add (String item) throws Exception {
-		synchronized (list) {
+		synchronized (this) {
 			super.add(item);
-			synchronized (this) {
-				this.notifyAll();
-			}
+			this.notifyAll();
 		}
 	}
 
