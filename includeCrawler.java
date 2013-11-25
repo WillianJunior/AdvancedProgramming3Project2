@@ -64,12 +64,12 @@ public class includeCrawler {
 				return;
 			}
 		} else
-			workersNum = 1; // change to 2 later
+			workersNum = 20; // change to 2 later
 		Thread[] threadPool = new Thread[workersNum];
 
 		// start the workers thread
 		for (int i=0; i<workersNum; i++) {
-			threadPool[i] = new Thread(new CrawlerThread(workQ, dirList, outputList));
+			threadPool[i] = new Thread(new CrawlerThread(i, workQ, dirList, outputList));
 			threadPool[i].start();
 		}
 
@@ -85,15 +85,6 @@ public class includeCrawler {
 			harvestThread.notify();
 		}
 
-		/*/create the working threads
-		String threadNumStr;
-		long crawler_threads;
-		if ((threadNumStr = System.getenv(CRAWLER_THREADS)) != null)
-			crawler_threads = Long.parseLong(threadNumStr);
-		*///else
-		//Thread threadSpawner = new Thread(new ThreadSpawner(crawler_threads, workQ));
-
-		// wait for all threads to finish by waiting for the spawner
 		System.out.println("[includeCrawler] main is finished");
 
 	}

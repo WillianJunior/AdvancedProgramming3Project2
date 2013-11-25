@@ -26,6 +26,7 @@ public class HarvestThread implements Runnable {
 			else if (!finished)
 				try {
 					synchronized (this) {
+						System.out.println("[HarvestThread] waiting");
 						this.wait();
 					}
 				} catch (Exception e) {

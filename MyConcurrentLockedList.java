@@ -24,10 +24,21 @@ public class MyConcurrentLockedList extends MyConcurrentList {
 
 	@Override
 	public void add (String item) throws Exception {
-		if (!locked)
-			super.add(item);
-		else
-			throw new Exception("locked");
+		synchronized (this) {
+			if (!locked)
+				super.add(item);
+			else
+				throw new Exception("locked");
+		}
+	}
+
+	public Iterator getIterator () throws Exception {
+		synchronized (this) {
+			if (locked)
+				return list.iterator();
+			else
+				throw new Exception("not locked, so can't get an iterator yet");
+		}
 	}
 
 }

@@ -29,12 +29,16 @@ public class MyConcurrentList {
 	// returns the first String or null if the list is empty
 	public String getFirstElement() {
 		synchronized (list) {
+			//System.out.println("[MyConcurrentList] in sync lock");
 			if (list.size() > 0) {
 				String temp = list.get(0);
 				list.remove(0);
+				//System.out.println("[MyConcurrentList] out sync lock");
 				return temp;
-			} else
+			} else {
+				//System.out.println("[MyConcurrentList] out sync lock");
 				return null;
+			}
 		}
 	}
 

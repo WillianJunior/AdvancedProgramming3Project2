@@ -11,7 +11,9 @@ public class MyConcurrentBlockingList extends MyConcurrentList {
 	public void add (String item) throws Exception {
 		synchronized (list) {
 			super.add(item);
-			this.notifyAll();
+			synchronized (this) {
+				this.notifyAll();
+			}
 		}
 	}
 
