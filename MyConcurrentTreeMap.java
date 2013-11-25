@@ -26,6 +26,10 @@ public class MyConcurrentTreeMap {
 		}
 	}
 
+	public int size() {
+		return inKey;
+	}
+
 	public void printout () {
 		synchronized (list) {
 			//System.out.println("[MyConcurrentList.printout] lock");

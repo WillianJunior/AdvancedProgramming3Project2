@@ -55,8 +55,11 @@ public class includeCrawler {
 
 		// create the harvest thread
 		Thread harvestThread;
-		harvestThread = new Thread(new HarvestThread(outputList));
+		harvestThread = new Thread(new HarvestThread(outputList, workQ.size()));
 		harvestThread.start();
+
+		// start timing the crawling execution
+		long startTime = System.currentTimeMillis();
 
 		// create working thread pool
 		String workersNumVar = System.getenv(CRAWLER_THREADS);
@@ -84,10 +87,16 @@ public class includeCrawler {
 			//System.out.println("[includeCrawler] Thread " + i + " is done");
 		}
 
-		// signal the harvest thread that it can be finished
-		harvestThread.interrupt();
+		// get end time for crawling execution
+		long stopTime = System.currentTimeMillis();
+		long crawlingTime = stopTime - startTime;
+
+		// wait for the harvest thread to end
+		harvestThread.join();
 
 		//System.out.println("[includeCrawler] main is finished");
+		//System.out.println("[includeCrawler] execution crawling time: " + crawlingTime + " millis");
+		System.out.print(crawlingTime);
 
 	}
 

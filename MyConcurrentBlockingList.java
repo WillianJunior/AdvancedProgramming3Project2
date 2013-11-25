@@ -14,7 +14,7 @@ public class MyConcurrentBlockingList extends MyConcurrentTreeMap {
 		throw new UnsupportedOperationException();
 	}
 
-	public String blockingPop () throws InterruptedException {
+	public String blockingPop () { //throws InterruptedException {
 		//throw new UnsupportedOperationException();
 		Map.Entry<Integer, String> output;
 		while ((list.size() > 0 && list.firstKey() > currentKey) || (output = super.pop()) == null) {
@@ -22,8 +22,6 @@ public class MyConcurrentBlockingList extends MyConcurrentTreeMap {
 				synchronized (this) {
 					this.wait();
 				}
-			} catch (InterruptedException e) {
-				throw e;
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
