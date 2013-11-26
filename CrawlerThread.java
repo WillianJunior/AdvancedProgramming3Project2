@@ -41,6 +41,9 @@ public class CrawlerThread implements Runnable {
 					result += " " + dep;
 				//System.out.println("Adding: " + fileNameEntry.getKey() + " -> " + result);
 				outputList.add(fileNameEntry.getKey(), result);
+			} catch (FileNotFoundException fnfe) {
+				System.out.println(fnfe.getMessage());
+				System.exit(0);
 			} catch (Exception e) {
 				//System.out.println("[CrawlerThread" + threadNum + "] Exception: ");
 				e.printStackTrace();
@@ -56,6 +59,7 @@ public class CrawlerThread implements Runnable {
 
 		// find the path of the file
 		String filePath = getFilePath(fileName);
+		//System.out.println(filePath);
 		depList.add(filePath);
 
 		do {
@@ -63,7 +67,8 @@ public class CrawlerThread implements Runnable {
 			for (String dep : depList) {
 				//System.out.println("parsing " + dep);
 				// parse the file
-				FileReader file = new FileReader(dep);
+				filePath = getFilePath(dep);
+				FileReader file = new FileReader(filePath);
 				BufferedReader reader = new BufferedReader(file);
 				String line;
 				while ((line = reader.readLine()) != null) {
@@ -90,8 +95,7 @@ public class CrawlerThread implements Runnable {
 	private Set<String> process (String fileName, Set<String> includeList) throws Exception {
 		
 		Set<String> outputTemp = new LinkedHashSet<String>();
-		Set<String> output = new LinkedHashSet<String>(); // this variable is to force includeList to be
-													   // unreferenced sooner (like free)
+		Set<String> output = new LinkedHashSet<String>();
 
 		// find the path of the file
 		String filePath = getFilePath(fileName);
@@ -135,16 +139,24 @@ public class CrawlerThread implements Runnable {
 		String dir;
 		while (dirIterator.hasNext()) {
 			dir = (String)dirIterator.next();
+			//System.out.println("dir: " + dir);
 			// get current directory files
 			File currentDir = new File(dir);
 			File[] files = currentDir.listFiles();
-			for (File f : files)
-				if (f.isFile() && f.getName().equals(fileName))
+			for (File f : files) {
+				//System.out.println("comparing " + getFileName(f.getName()) + " with " + getFileName(fileName));
+				if (f.isFile() && getFileName(fileName).equals(getFileName(f.getName())))
 					return dir + "/" + fileName;			
+			}
 		}
 
 		throw new Exception("file not found");
 
+	}
+
+	private String getFileName (String filePath) {
+		String[] names = filePath.split("/");
+		return names[names.length-1];
 	}
 
 }

@@ -21,7 +21,7 @@ public class HarvestThread implements Runnable {
 		this.dependencyCount = dependencyCount;
 	}
 
-	// will run until there are no more elements on the output list
+	// will print the dependencies the extact amount of times defined by dependencyCount
 	public void run () {
 		
 		//System.out.println("[HarvestThread] Starting the harvest");

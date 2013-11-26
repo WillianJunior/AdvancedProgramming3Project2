@@ -30,11 +30,12 @@ public class includeCrawler {
 
 		// assemble the files list (working queue)
 		// add the current directory to the list
-		dirList.add("./");
+		dirList.add(".");
 		// get -Idir argument files
 		int argc = 0;
 		for (String arg : args)
 			if (arg.matches("-I(.)*")) {
+				//System.out.println(arg.substring(2));
 				dirList.add(arg.substring(2));
 				argc++;
 			}
