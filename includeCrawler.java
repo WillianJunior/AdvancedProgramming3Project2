@@ -1,3 +1,14 @@
+/**************************************************/
+/**             Authorship Statement             **/
+/**************************************************/
+/** Author: Willian de Oliveira Barreiros Junior **/
+/** Login: 2105514D                              **/
+/** Title of Assignment: AP3 Exercise 2          **/
+/**************************************************/
+/** This is my own work as defined in the        **/
+/** Academic Ethics agreement I have signed.     **/
+/**************************************************/
+
 import java.util.*;
 import java.io.File;
 
@@ -72,7 +83,7 @@ public class includeCrawler {
 				return;
 			}
 		} else
-			workersNum = 1; // change to 2 later
+			workersNum = 2; // change to 2 later
 		Thread[] threadPool = new Thread[workersNum];
 
 		// start the workers thread
@@ -96,7 +107,7 @@ public class includeCrawler {
 
 		//System.out.println("[includeCrawler] main is finished");
 		//System.out.println("[includeCrawler] execution crawling time: " + crawlingTime + " millis");
-		System.out.print(crawlingTime);
+		//System.out.print(crawlingTime);
 
 	}
 

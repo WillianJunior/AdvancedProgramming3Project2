@@ -1,3 +1,14 @@
+/**************************************************/
+/**             Authorship Statement             **/
+/**************************************************/
+/** Author: Willian de Oliveira Barreiros Junior **/
+/** Login: 2105514D                              **/
+/** Title of Assignment: AP3 Exercise 2          **/
+/**************************************************/
+/** This is my own work as defined in the        **/
+/** Academic Ethics agreement I have signed.     **/
+/**************************************************/
+
 import java.util.*;
 
 public class HarvestThread implements Runnable {
@@ -17,7 +28,7 @@ public class HarvestThread implements Runnable {
 		String output;
 		for (int i=0; i<dependencyCount; i++) {
 			output = outputList.blockingPop();
-			//System.out.println(output);
+			System.out.println(output);
 		}
 		//System.out.println("[HarvestThread] The harvest is finished");
 	

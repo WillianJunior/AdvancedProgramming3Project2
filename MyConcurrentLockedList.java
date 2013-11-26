@@ -1,5 +1,15 @@
+/**************************************************/
+/**             Authorship Statement             **/
+/**************************************************/
+/** Author: Willian de Oliveira Barreiros Junior **/
+/** Login: 2105514D                              **/
+/** Title of Assignment: AP3 Exercise 2          **/
+/**************************************************/
+/** This is my own work as defined in the        **/
+/** Academic Ethics agreement I have signed.     **/
+/**************************************************/
+
 import java.util.*;
-import java.lang.UnsupportedOperationException;
 
 public class MyConcurrentLockedList extends MyConcurrentList {
 
@@ -35,7 +45,7 @@ public class MyConcurrentLockedList extends MyConcurrentList {
 	public Iterator getIterator () throws Exception {
 		synchronized (this) {
 			if (locked)
-				return list.iterator();
+				return Collections.unmodifiableCollection(list).iterator();
 			else
 				throw new Exception("not locked, so can't get an iterator yet");
 		}

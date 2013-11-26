@@ -1,3 +1,14 @@
+/**************************************************/
+/**             Authorship Statement             **/
+/**************************************************/
+/** Author: Willian de Oliveira Barreiros Junior **/
+/** Login: 2105514D                              **/
+/** Title of Assignment: AP3 Exercise 2          **/
+/**************************************************/
+/** This is my own work as defined in the        **/
+/** Academic Ethics agreement I have signed.     **/
+/**************************************************/
+
 import java.util.*;
 import java.io.*;
 
@@ -9,7 +20,7 @@ public class CrawlerThread implements Runnable {
 	private volatile MyConcurrentLockedList dirList;
 
 	public CrawlerThread (int threadNum, MyConcurrentTreeMap workQ, MyConcurrentLockedList dirList, MyConcurrentBlockingList outputList) {
-		this.threadNum = threadNum;
+		this.threadNum = threadNum; // debuging purposes
 		this.workQ = workQ;
 		this.outputList = outputList;
 		this.dirList = dirList;
