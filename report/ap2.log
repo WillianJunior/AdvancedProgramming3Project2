@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-1.40.10 (TeX Live 2009/Debian) (format=pdflatex 2013.10.18)  26 NOV 2013 02:34
+This is pdfTeX, Version 3.1415926-1.40.10 (TeX Live 2009/Debian) (format=pdflatex 2013.10.18)  26 NOV 2013 11:56
 entering extended mode
  %&-line parsing enabled.
 **ap2.tex
@@ -562,26 +562,34 @@ Overfull \hbox (16.44182pt too wide) in paragraph at lines 55--56
 
 
  <./arch.png>] [2]
-[3] (./ap2.aux) ) 
+<effPerThreadError.png, id=88, 1204.5pt x 903.375pt>
+File: effPerThreadError.png Graphic file (type png)
+
+<use effPerThreadError.png>
+Overfull \hbox (11.39574pt too wide) in paragraph at lines 113--114
+ [][] 
+ []
+
+[3 <./effPerThreadError.png (PNG copy)>] (./ap2.aux) ) 
 Here is how much of TeX's memory you used:
- 7094 strings out of 495061
- 95922 string characters out of 1182620
- 180231 words of memory out of 3000000
- 10142 multiletter control sequences out of 15000+50000
+ 7101 strings out of 495061
+ 96063 string characters out of 1182620
+ 180311 words of memory out of 3000000
+ 10147 multiletter control sequences out of 15000+50000
  13893 words of font info for 37 fonts, out of 3000000 for 9000
  28 hyphenation exceptions out of 8191
  38i,7n,36p,668b,1016s stack positions out of 5000i,500n,10000p,200000b,50000s
- </home/willian/.texmf-var/fonts/pk/ljfour/jknappen/ec/ecbx100
-0.600pk> </home/willian/.texmf-var/fonts/pk/ljfour/jknappen/ec/ecbx1200.600pk> 
-</home/willian/.texmf-var/fonts/pk/ljfour/jknappen/ec/ectt1000.600pk> </home/wi
-llian/.texmf-var/fonts/pk/ljfour/jknappen/ec/ecti1000.600pk> </home/willian/.te
-xmf-var/fonts/pk/ljfour/jknappen/ec/ecrm1000.600pk> </home/willian/.texmf-var/f
-onts/pk/ljfour/jknappen/ec/ecbx1440.600pk> </home/willian/.texmf-var/fonts/pk/l
-jfour/jknappen/ec/ecrm1200.600pk> </home/willian/.texmf-var/fonts/pk/ljfour/jkn
-appen/ec/ecrm1728.600pk>
-Output written on ap2.pdf (3 pages, 143913 bytes).
+ </home/willian/.texmf-va
+r/fonts/pk/ljfour/jknappen/ec/ecbx1000.600pk> </home/willian/.texmf-var/fonts/p
+k/ljfour/jknappen/ec/ecbx1200.600pk> </home/willian/.texmf-var/fonts/pk/ljfour/
+jknappen/ec/ectt1000.600pk> </home/willian/.texmf-var/fonts/pk/ljfour/jknappen/
+ec/ecti1000.600pk> </home/willian/.texmf-var/fonts/pk/ljfour/jknappen/ec/ecrm10
+00.600pk> </home/willian/.texmf-var/fonts/pk/ljfour/jknappen/ec/ecbx1440.600pk>
+ </home/willian/.texmf-var/fonts/pk/ljfour/jknappen/ec/ecrm1200.600pk> </home/w
+illian/.texmf-var/fonts/pk/ljfour/jknappen/ec/ecrm1728.600pk>
+Output written on ap2.pdf (3 pages, 192750 bytes).
 PDF statistics:
- 364 PDF objects out of 1000 (max. 8388607)
- 27 named destinations out of 1000 (max. 500000)
- 110 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 366 PDF objects out of 1000 (max. 8388607)
+ 28 named destinations out of 1000 (max. 500000)
+ 115 words of extra memory for PDF output out of 10000 (max. 10000000)
 

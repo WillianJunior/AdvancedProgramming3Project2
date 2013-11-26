@@ -36,7 +36,7 @@ public class CrawlerThread implements Runnable {
 			fileName = fileNameEntry.getValue();
 			String result = fileName.split("\\.")[0] + ".o: " + fileName;
 			try {
-				Set<String> dependencies = process(fileName, new LinkedHashSet<String>());
+				Set<String> dependencies = process(fileName);
 				for (String dep : dependencies)
 					result += " " + dep;
 				//System.out.println("Adding: " + fileNameEntry.getKey() + " -> " + result);
@@ -48,7 +48,45 @@ public class CrawlerThread implements Runnable {
 		}
 	}
 
+	private Set<String> process (String fileName) throws Exception {
+		
+		Set<String> output = new LinkedHashSet<String>();
+		Set<String> depList = new LinkedHashSet<String>();
+		Set<String> tempDepList = new LinkedHashSet<String>();
+
+		// find the path of the file
+		String filePath = getFilePath(fileName);
+		depList.add(filePath);
+
+		do {
+			tempDepList.clear();
+			for (String dep : depList) {
+				//System.out.println("parsing " + dep);
+				// parse the file
+				FileReader file = new FileReader(dep);
+				BufferedReader reader = new BufferedReader(file);
+				String line;
+				while ((line = reader.readLine()) != null) {
+					if (line.matches("( )*#include( )*\"(.)*\".*")) {
+						String dependency = line.split("\"")[1];
+						if (!output.contains(dependency))
+							tempDepList.add(dependency);
+					}
+				}
+				file.close();
+			}
+
+			output.addAll(tempDepList);
+			depList.clear();
+			depList.addAll(tempDepList);
+		} while (!tempDepList.isEmpty());
+
+		return output;
+
+	}
+
 	// recursive file processing function
+	@Deprecated
 	private Set<String> process (String fileName, Set<String> includeList) throws Exception {
 		
 		Set<String> outputTemp = new LinkedHashSet<String>();
@@ -59,8 +97,8 @@ public class CrawlerThread implements Runnable {
 		String filePath = getFilePath(fileName);
 
 		// parse the file
-		FileReader fr = new FileReader(filePath);
-		BufferedReader reader = new BufferedReader(fr);
+		FileReader file = new FileReader(filePath);
+		BufferedReader reader = new BufferedReader(file);
 		String line;
 		while ((line = reader.readLine()) != null) {
 			if (line.matches("( )*#include( )*\"(.)*\".*")) {
@@ -72,7 +110,7 @@ public class CrawlerThread implements Runnable {
 
 		// IMPORTANT!!! without this there is the real chance of
 		// exceeding the max num of open files (happened!!)
-		fr.close();
+		file.close();
 
 		
 		output.addAll(includeList);
