@@ -25,8 +25,8 @@ public class includeCrawler {
 		 
 		// instanciate the workQ
 		workQ = new MyConcurrentTreeMap();
-		outputList = new MyConcurrentBlockingList();
 		dirList = new MyConcurrentLockedList();
+		outputList = new MyConcurrentBlockingList();
 
 		// assemble the files list (working queue)
 		// add the current directory to the list
@@ -35,7 +35,6 @@ public class includeCrawler {
 		int argc = 0;
 		for (String arg : args)
 			if (arg.matches("-I(.)*")) {
-				//System.out.println(arg.substring(2));
 				dirList.add(arg.substring(2));
 				argc++;
 			}
@@ -53,7 +52,6 @@ public class includeCrawler {
 
 		// get local directory files passed by argv
 		for(int i=argc; i<args.length; i++) {
-			//System.out.println(args[i]);
 			if (args[i].matches("^.+[.y]$") || args[i].matches("^.+[.l]$") || args[i].matches("^.+[.c]$"))
 				workQ.add(args[i]);
 			else {
@@ -61,9 +59,6 @@ public class includeCrawler {
 				return;
 			}
 		}
-
-		//workQ.printout();
-		//System.in.read();
 
 		// create the harvest thread
 		Thread harvestThread;
@@ -84,31 +79,21 @@ public class includeCrawler {
 				return;
 			}
 		} else
-			workersNum = 2; // change to 2 later
+			workersNum = 2;
 		Thread[] threadPool = new Thread[workersNum];
 
 		// start the workers thread
 		for (int i=0; i<workersNum; i++) {
-			threadPool[i] = new Thread(new CrawlerThread(i, workQ, dirList, outputList));
+			threadPool[i] = new Thread(new CrawlerThread(workQ, dirList, outputList));
 			threadPool[i].start();
 		}
 
 		// wait for the workers threads to finish
-		for (int i=0; i<workersNum; i++) {
+		for (int i=0; i<workersNum; i++)
 			threadPool[i].join();
-			//System.out.println("[includeCrawler] Thread " + i + " is done");
-		}
-
-		// get end time for crawling execution
-		long stopTime = System.currentTimeMillis();
-		long crawlingTime = stopTime - startTime;
 
 		// wait for the harvest thread to end
 		harvestThread.join();
-
-		//System.out.println("[includeCrawler] main is finished");
-		//System.out.println("[includeCrawler] execution crawling time: " + crawlingTime + " millis");
-		//System.out.print(crawlingTime);
 
 	}
 

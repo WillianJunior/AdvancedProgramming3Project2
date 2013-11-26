@@ -1,3 +1,4 @@
+clear all;
 set1Threads = [643, 645, 629, 629, 681, 668, 692, 634, 653, 637, 657, 628, 675, 723, 689, 651, 675, 678, 632, 674, 733];
 set2Threads = [511, 530, 568, 539, 516, 551, 528, 601, 515, 514, 504, 522, 523, 500, 535, 583, 519, 525, 546, 537, 539];
 set3Threads = [561, 554, 627, 531, 601, 503, 537, 504, 552, 617, 608, 542, 610, 515, 566, 539, 572, 527, 556, 688, 545];
@@ -18,3 +19,22 @@ set17Threads = [1008, 815, 909, 890, 1116, 950, 945, 959, 1003, 910, 932, 954, 8
 set18Threads = [1078, 781, 899, 861, 1051, 916, 926, 938, 1043, 1094, 955, 957, 1007, 920, 978, 783, 1070, 796, 904, 1101, 914];
 set19Threads = [929, 942, 828, 1149, 1011, 936, 1034, 1031, 970, 925, 807, 853, 1008, 875, 1054, 898, 807, 980, 1027, 857, 995];
 set20Threads = [740, 784, 1067, 1066, 929, 801, 1005, 1003, 1090, 1113, 1022, 888, 1149, 927, 886, 847, 880, 828, 1046, 1051, 817];
+x = [1:20];
+y = [mean(set1Threads), mean(set2Threads), mean(set3Threads), mean(set4Threads), mean(set5Threads), mean(set6Threads), mean(set7Threads), mean(set8Threads), mean(set9Threads), mean(set10Threads), mean(set11Threads), mean(set12Threads), mean(set13Threads), mean(set14Threads), mean(set15Threads), mean(set16Threads), mean(set17Threads), mean(set18Threads), mean(set19Threads), mean(set20Threads)];
+ey = [std(set1Threads), std(set2Threads), std(set3Threads), std(set4Threads), std(set5Threads), std(set6Threads), std(set7Threads), std(set8Threads), std(set9Threads), std(set10Threads), std(set11Threads), std(set12Threads), std(set13Threads), std(set14Threads), std(set15Threads), std(set16Threads), std(set17Threads), std(set18Threads), std(set19Threads), std(set20Threads)];
+h=figure(1);
+hold on;
+errorbar(y,ey);
+plot(x,y,'LineWidth',3);
+grid on;
+title("Crawling Efficiency Given the Number of Worker Threads");
+set(gca(),
+  'xtick',[1:20],
+  'xlim',[0,21],
+  'ytick',[0:100:1200],
+  'ylim',[300,1200]);
+xlabel ("Number of Threads");
+ylabel ("Crawling Execution Time (milliseconds)");
+set('FontSize', 1000);
+hold off;
+print(1,"effPerThreadError.png");

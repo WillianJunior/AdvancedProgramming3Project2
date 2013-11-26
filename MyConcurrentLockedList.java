@@ -20,9 +20,11 @@ public class MyConcurrentLockedList extends MyConcurrentList {
 		locked = false;
 	}
 
-	// this should only happen once
-	// also, synchronized avoids running condition
-	// between lock() and add()
+	/* 
+	 * this should only happen once
+	 * also, synchronized avoids running condition
+	 * between lock() and add()
+	 */
 	public  void lock () throws Exception {
 		synchronized (this) {
 			if (!locked)
@@ -32,6 +34,7 @@ public class MyConcurrentLockedList extends MyConcurrentList {
 		}
 	}
 
+	// only add if it is not yet locked
 	@Override
 	public void add (String item) throws Exception {
 		synchronized (this) {
@@ -42,6 +45,11 @@ public class MyConcurrentLockedList extends MyConcurrentList {
 		}
 	}
 
+	/*
+	 * returns an imutable iterator for the collection.
+	 * synchronized is used to avoid race condition 
+	 * with add and() lock()
+	 */
 	public Iterator getIterator () throws Exception {
 		synchronized (this) {
 			if (locked)

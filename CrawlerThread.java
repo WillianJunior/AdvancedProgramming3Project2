@@ -14,66 +14,68 @@ import java.io.*;
 
 public class CrawlerThread implements Runnable {
 
-	private int threadNum;
 	private volatile MyConcurrentTreeMap workQ;
-	private volatile MyConcurrentBlockingList outputList;
 	private volatile MyConcurrentLockedList dirList;
+	private volatile MyConcurrentBlockingList outputList;
 
-	public CrawlerThread (int threadNum, MyConcurrentTreeMap workQ, MyConcurrentLockedList dirList, MyConcurrentBlockingList outputList) {
-		this.threadNum = threadNum; // debuging purposes
+	public CrawlerThread (MyConcurrentTreeMap workQ, MyConcurrentLockedList dirList, MyConcurrentBlockingList outputList) {
 		this.workQ = workQ;
-		this.outputList = outputList;
 		this.dirList = dirList;
+		this.outputList = outputList;
 	}
 
 	public void run () {
-		//System.out.println("[CrawlerThread" + threadNum + "] Thread started");
+		
 		Map.Entry<Integer,String> fileNameEntry;
 		String fileName;
+		String result;
+
 		// process a file while there is still one in the list
 		while ((fileNameEntry = workQ.pop()) != null) {
-			//System.out.println("[CrawlerThread" + threadNum + "] processing " + fileName);
 			fileName = fileNameEntry.getValue();
-			String result = fileName.split("\\.")[0] + ".o: " + fileName;
+			result = fileName.split("\\.")[0] + ".o: " + fileName;
 			try {
 				Set<String> dependencies = process(fileName);
 				for (String dep : dependencies)
 					result += " " + dep;
-				//System.out.println("Adding: " + fileNameEntry.getKey() + " -> " + result);
 				outputList.add(fileNameEntry.getKey(), result);
 			} catch (FileNotFoundException fnfe) {
 				System.out.println(fnfe.getMessage());
 				System.exit(0);
 			} catch (Exception e) {
-				//System.out.println("[CrawlerThread" + threadNum + "] Exception: ");
 				e.printStackTrace();
+				System.exit(0);
 			}
 		}
 	}
 
 	private Set<String> process (String fileName) throws Exception {
 		
+		// final return list
 		Set<String> output = new LinkedHashSet<String>();
+		// list of dependencies to be solved
 		Set<String> depList = new LinkedHashSet<String>();
+		// list of dependencies found into the parsed file
 		Set<String> tempDepList = new LinkedHashSet<String>();
+		String line;
 
 		// find the path of the file
-		String filePath = getFilePath(fileName);
-		//System.out.println(filePath);
+		String filePath = getFileName(fileName);
 		depList.add(filePath);
 
+		// iterate until all dependencies are solved
 		do {
 			tempDepList.clear();
 			for (String dep : depList) {
-				//System.out.println("parsing " + dep);
 				// parse the file
-				filePath = getFilePath(dep);
+				filePath = getFileName(dep);
 				FileReader file = new FileReader(filePath);
 				BufferedReader reader = new BufferedReader(file);
-				String line;
 				while ((line = reader.readLine()) != null) {
+					// check if it is a ("") dependency
 					if (line.matches("( )*#include( )*\"(.)*\".*")) {
 						String dependency = line.split("\"")[1];
+						// check it this dependency is already on the output list
 						if (!output.contains(dependency))
 							tempDepList.add(dependency);
 					}
@@ -81,7 +83,9 @@ public class CrawlerThread implements Runnable {
 				file.close();
 			}
 
+			// add all found dependencies to the output list
 			output.addAll(tempDepList);
+			// set the depList with the new dependencies to be processed
 			depList.clear();
 			depList.addAll(tempDepList);
 		} while (!tempDepList.isEmpty());
@@ -90,62 +94,22 @@ public class CrawlerThread implements Runnable {
 
 	}
 
-	// recursive file processing function
-	@Deprecated
-	private Set<String> process (String fileName, Set<String> includeList) throws Exception {
-		
-		Set<String> outputTemp = new LinkedHashSet<String>();
-		Set<String> output = new LinkedHashSet<String>();
-
-		// find the path of the file
-		String filePath = getFilePath(fileName);
-
-		// parse the file
-		FileReader file = new FileReader(filePath);
-		BufferedReader reader = new BufferedReader(file);
-		String line;
-		while ((line = reader.readLine()) != null) {
-			if (line.matches("( )*#include( )*\"(.)*\".*")) {
-				String dependency = line.split("\"")[1];
-				if (!includeList.contains(dependency))
-					outputTemp.add(dependency);
-			}
-		}
-
-		// IMPORTANT!!! without this there is the real chance of
-		// exceeding the max num of open files (happened!!)
-		file.close();
-
-		
-		output.addAll(includeList);
-		output.addAll(outputTemp);
-		//System.out.println();
-		//System.out.println(fileName); 
-		//System.out.println("file includeList - " + includeList.toString());
-		//System.out.println("file outputTemp - " + outputTemp.toString());
-		//System.in.read();
-
-		for (String s : outputTemp) {
-			//System.out.println(s);
-			output.addAll(process(s, output));
-		}
-
-		return output;
-	}
-
-	private String getFilePath (String fileName) throws Exception {
+	// return the filename of the dependency if it is found within the search directories
+	private String getFileName (String fileName) throws Exception {
 
 		Iterator dirIterator = dirList.getIterator();
 		String dir;
+
 		while (dirIterator.hasNext()) {
 			dir = (String)dirIterator.next();
-			//System.out.println("dir: " + dir);
+			
 			// get current directory files
 			File currentDir = new File(dir);
 			File[] files = currentDir.listFiles();
+
+			// search for the file
 			for (File f : files) {
-				//System.out.println("comparing " + getFileName(f.getName()) + " with " + getFileName(fileName));
-				if (f.isFile() && getFileName(fileName).equals(getFileName(f.getName())))
+				if (f.isFile() && extractFileName(fileName).equals(extractFileName(f.getName())))
 					return dir + "/" + fileName;			
 			}
 		}
@@ -154,7 +118,8 @@ public class CrawlerThread implements Runnable {
 
 	}
 
-	private String getFileName (String filePath) {
+	// get only the filename given a filepath
+	private String extractFileName (String filePath) {
 		String[] names = filePath.split("/");
 		return names[names.length-1];
 	}

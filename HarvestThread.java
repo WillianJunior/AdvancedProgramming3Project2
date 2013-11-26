@@ -11,6 +11,14 @@
 
 import java.util.*;
 
+/*
+ * The harvest thread print a result as soon as possible.
+ * It is worth noticing that blockingPop() will always
+ * return a string, but it will block itself if it
+ * can't return one yet, unlocking itself whenever
+ * the pop operation is possible again.
+ */
+
 public class HarvestThread implements Runnable {
 
 	MyConcurrentBlockingList outputList;
@@ -24,13 +32,8 @@ public class HarvestThread implements Runnable {
 	// will print the dependencies the extact amount of times defined by dependencyCount
 	public void run () {
 		
-		//System.out.println("[HarvestThread] Starting the harvest");
-		String output;
-		for (int i=0; i<dependencyCount; i++) {
-			output = outputList.blockingPop();
-			System.out.println(output);
-		}
-		//System.out.println("[HarvestThread] The harvest is finished");
+		for (int i=0; i<dependencyCount; i++)
+			System.out.println(outputList.blockingPop());
 	
 	}
 
